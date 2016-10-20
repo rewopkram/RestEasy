@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
+    <body>
+    <h3>Debug Test</h3>
+    
+    <div ng-app="myApp">
+    	A: {{a}}
+    </div>
+        
+        <script>
+        	
+            var a = 0;
+            var b = 0;
+            
+            function incrementA() {
+            	a = a + 1;
+            }
+            
+            function getB() {
+            	b = a;
+            	return b;
+            }
+            
+            function incrementA3Times() {
+            	incrementA();
+            	incrementA();
+            	incrementA();
+            }
+            
+            console.log("a = " + a);
+            incrementA3Times();
+            console.log("a = " + a);
+            console.log("b = " + b);
+            getB();
+            console.log("b = " + b);
+
+        </script>
+       <h4>script loaded!</h4> 
+    </body>
+</htmL>

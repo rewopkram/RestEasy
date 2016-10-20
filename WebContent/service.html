@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
+    <body>
+        
+        <div ng-app="myApp" ng-controller="myCtrl">
+            The URL of this page is <p>{{myUrl}}</p>
+            
+            <p>Today's welcome message is:</p>
+            
+            <h1>{{myWelcome}}</h1>
+            statuscode: {{statuscode}}<br>
+            statustext: {{statustext}}<br>
+            
+            <br>The time is {{theTime}}
+            
+            <br><br>TODO try to input my number through the service
+            <p>My service hexafy type a number <input type="text" ng-model="hext">
+            </p>
+            the hexadecimal value of {{hext}} is {{hex}}
+            
+        </div>
+        
+        
+        <script>
+            var app = angular.module('myApp',[]);
+            app.controller('myCtrl', function($scope, $location, $http, $interval, hexafy) {
+                 $scope.myUrl = $location.absUrl();
+                 $http.get("welcome.html").then(function (response) {
+                        $scope.myWelcome = response.data;
+                        $scope.statuscode = response.status;
+                        $scope.statustext = response.statusText;
+                         }, function(response) {
+                          $scope.myWelcome = "something went wrong";
+                          $scope.statuscode = response.status;
+                          $scope.statustext = response.statusText;
+                         });
+                 $scope.theTime = new Date().toLocaleTimeString();
+                 $interval(function() {
+                    $scope.theTime = new Date().toLocaleTimeString();
+                 }, 1000);
+                 $scope.hext = 255;
+                 $scope.hex = hexafy.myFunc($scope.hext);
+             });
+             
+             app.service('hexafy', function() {
+                 this.myFunc = function(x) {
+                     return x.toString(16);
+                 }
+             });
+            </script>
+        
+    </body>
+</htmL>

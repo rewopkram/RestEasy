@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
+    
+    <body>
+        
+        <div ng-app="myApp" ng-controller="myCtrl">
+            <!--  
+            <p>Today's welcome message is:</p>
+            
+            <h1>{{myWelcome.Name}}</h1>
+            -->
+            Name: {{person.name}}<br>
+            City: {{person.city}}<br>
+            Country: {{person.country}}<br>
+            
+            
+            statuscode: {{statuscode}}<br>
+            statustext: {{statustext}}<br>
+            
+           
+            </div>
+        
+        
+        <script>
+            var app = angular.module('myApp',[]);
+            app.controller('myCtrl', function($scope, $http) {
+            	
+            	$http({
+            		//url: 'rest/message/AngularJS!',
+            		url: 'rest/json',
+            		method: 'GET'
+            	}).then(function (response) {
+            		$scope.person = response.data.person;
+            		$scope.statuscode = response.status;
+                    $scope.statustext = response.statusText;
+            	}, function(response) {
+                    $scope.person = "something went wrong";
+                    $scope.statuscode = response.status;
+                    $scope.statustext = response.statusText;
+            	});      
+            	
+            	/* $http.get("welcome.html").then(function (response) {
+                    $scope.myWelcome = response.data;
+                    $scope.statuscode = response.status;
+                    $scope.statustext = response.statusText;
+              	}, function(response) {
+                    $scope.myWelcome = "something went wrong";
+                    $scope.statuscode = response.status;
+                    $scope.statustext = response.statusText;
+              	}); */
+            });
+                           
+
+            </script>
+        
+    </body>
+</htmL>

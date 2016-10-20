@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
+    
+<style>
+table, th , td {
+  		border: 1px solid grey;
+  		border-collapse: collapse;
+  		padding: 5px;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style>
+
+    <body>
+        
+            <table border="1">
+            	<th>#</th>
+            	<th ng-click="orderByMe('name')">Name</th>
+            	<th ng-click="orderByMe('country')">Country</th>
+            	<tr ng-repeat="x in myData | orderBy:myOrderBy" ng-click="search(x.name)">
+            		<td>{{$index + 1}}</td>
+            		<!-- this is pretty cool and worked immediately which was surprising. Linking to rdetails.html was
+            		not big surprise but the fact the selected name is passed seamlessly to the search function is a bonus. -->
+            		<td><a href="#details">{{x.name}}</a></td>
+            		<td>{{x.country | uppercase}}</td>
+            	</tr>
+            </table>
+         
+    </body>
+</htmL>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="release/ui-grid.min.js"></script>
+<script src="release/ui-grid.js"></script>
+<link rel="stylesheet" href="release/ui-grid2.css" type="text/css">
+<!-- <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+<script src="release/ui-grid.css"></script> -->
+
+<style>
+.grid {
+	width: 500px;
+	height: 250px;
+}
+</style>
+
+<body>
+
+<div ng-controller="myCtrl">
+	<div id="grid1" ui-grid="{data: myData}" class="grid"></div>
+	<!--  <div id="grid1" ui-grid="{data: myData}" class="myGrid"></div>-->
+</div>
+
+
+
+
+<script>
+var app = angular.module("app", ["ui.grid"]);
+app.controller('myCtrl', ['$scope', function($scope) {
+	$scope.myData = [
+		{
+			"firtsName": "Cox",
+			"lastName": "Carney",
+			"company": "Enormo",
+			"employed": true
+		},
+		{
+			"firtsName": "Lorraine",
+			"lastName": "Downs",
+			"company": "Hooters",
+			"employed": false
+		},
+		{
+			"firtsName": "Rodney",
+			"lastName": "Harlan",
+			"company": "Texactaco",
+			"employed": true
+		},
+		{
+			"firtsName": "Nigel",
+			"lastName": "LeRoux",
+			"company": "MegaDoers",
+			"employed": true
+		}
+	];
+}]);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
+    <script src="route.js"></script>
+    
+    
+    <body ng-app="myApp" ng-controller="myCtrl">
+        
+        <p>
+        <a href="#/">Home</a>
+        <a href="#search">Search</a>
+        <a href="#list">List Staff</a>
+        
+        </p>
+        
+        <div ng-view></div>
+        
+        <!--  moved to route.js
+        <script>
+            var app = angular.module("myApp",["ngRoute"]);
+            // this doesn't work. Throws exceptions with the embedded controllers. Try putting all the script in one js and reference from the htmls or putting search controller here
+            app.config(function($routeProvider) {
+            	$routeProvider
+            	.when("/", {
+            		templateUrl : "welcome.html"
+            	})
+            	.when("/search", {
+            		templateUrl : "rsearch.html"
+            	})
+            	.when("/list", {
+            		templateUrl : "rlist.html"
+            	});
+            }); 
+            // I got this working
+            /* app.config(function($routeProvider) {
+            	$routeProvider
+            	.when("/", {
+            		//alert('home');
+            		template : "Click on links to change this content"
+            	})
+            	.when("/search", {
+            		//alert("search");
+            		template : "So you want to do a search?"
+            	})
+            	.when("/list", {
+            		template : "OK we're gonna list stuff"
+            	}); 
+            });*/
+            
+            app.controller('myCtrl', function($scope, $http) {  
+            	// initialise searchBy scope variable
+            	//$scope.searchBy = "Richie Taferner";
+            	
+            	
+            	
+            	// declare search function to retrieve full person details when row in table clicked
+            	$scope.search = function(x) {
+            		//alert("search by " + x);
+            		$scope.searchBy = x;
+            		//alert("searching");
+            		$http({
+                		url: 'rest/jsond',
+                		method: 'GET',
+                		params: {
+                			name: $scope.searchBy
+                		}
+                	}).then(function (response) {
+                		$scope.person = response.data.person;
+                		$scope.statuscode = response.status;
+                        $scope.statustext = response.statusText;
+                	}, function(response) {
+                        $scope.person = "something went wrong";
+                        $scope.statuscode = response.status;
+                        $scope.statustext = response.statusText;
+                	});      
+            	};
+            	
+            	// call rest list service to retrieve all persons
+            	$http({
+            		url: 'rest/jsonl',
+            		method: 'GET'
+            	}).then(function (response) {
+            		$scope.myData = response.data.paginatedListWrapper.list;
+            		//$scope.person = response.data.person;
+            		$scope.statuscode = response.status;
+                    $scope.statustext = response.statusText;
+            	}, function(response) {
+                    $scope.person = "something went wrong";
+                    $scope.statuscode = response.status;
+                    $scope.statustext = response.statusText;
+            	});  
+            	
+            	$scope.orderByMe = function(x) {
+            		$scope.myOrderBy = x;
+            	};
+            	
+            });
+            
+         
+                
+            </script>
+         -->
+    </body>
+</htmL>

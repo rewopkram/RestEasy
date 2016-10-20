@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
+    <body>
+    <h3>Debug Test</h3>
+    
+    <div ng-app="myApp" ng-controller="myCtrl">
+    	A: {{a}}
+    </div>
+        
+        <script>
+        	var app = angular.module('myApp', []);
+        	app.controller('myCtrl', function($scope) {
+        		$scope.a = 0;
+        		$scope.b = 0;
+        		
+        		$scope.incrementA = function() {
+        			$scope.a = $scope.a + 1;
+        		};
+        		
+        		$scope.getB = function() {
+        			$scope.b = $scope.a;
+        			return $scope.b;
+        		};
+        		
+        		$scope.incrementA3Times = function() {
+        			$scope.incrementA();
+        			$scope.incrementA();
+        			$scope.incrementA();
+        		};
+        		
+        		console.log("a = " + $scope.a);
+                $scope.incrementA3Times();
+                console.log("a = " + $scope.a);
+                console.log("b = " + $scope.b);
+                $scope.getB()
+                console.log("b = " + $scope.b);
+        		
+        	});
+            
+            
+
+        </script>
+       <h4>script loaded!</h4> 
+    </body>
+</htmL>
