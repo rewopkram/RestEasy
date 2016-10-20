@@ -35,7 +35,7 @@ public class ReactRestService {
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public String saveComment(String comment) {
-		System.out.println("****ReactRestService POST...");
+		System.out.println("****ReactRestService POST to rest service...");
 		
 		try {
 			String tmp = readFile();
