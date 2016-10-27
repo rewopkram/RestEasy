@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation=
+        "http://www.springframework.org/schema/aop     http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+         http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://www.springframework.org/schema/util    http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+    default-autowire="constructor" >
+
+    <description>Spring application context definition for Special Students Teacher Access (SSTA).</description>
+
+    <context:annotation-config/>
+
+    <!-- =================================================================== -->
+    <!-- Gilead setup                                                                                          -->
+    <!--                                                                                                            -->
+    <!--   The "gileadPointCut" pointcut entry below should refer to the                    -->
+    <!--   package that contains the client-side GWT RPC service and Async              -->
+    <!--   classes.                                                                                               -->
+    <!-- =================================================================== -->
+<!--
+    <bean id="gileadAdapterAdvisor" class="org.gwtrpcspring.gilead.GileadAdapterAdvice"/>
+
+    <aop:config>
+        <aop:aspect id="gileadAdapterAspect" ref="gileadAdapterAdvisor">
+            <aop:pointcut id="gileadPointcut" expression="execution(public * au.edu.wa.eddept.ssta.gwt.client.rpc.*.*(..))"/>
+            <aop:around method="doBasicProfiling" pointcut-ref="gileadPointcut"/>
+        </aop:aspect>
+    </aop:config>
+-->
+    <bean id="persistenceUtil" class="net.sf.gilead.core.hibernate.HibernateUtil">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="proxyStore" class="net.sf.gilead.core.store.stateful.HttpSessionProxyStore">
+        <property name="persistenceUtil" ref="persistenceUtil"/>
+    </bean>
+
+    <bean class="net.sf.gilead.core.PersistentBeanManager">
+        <property name="proxyStore" ref="proxyStore"/>
+        <property name="persistenceUtil" ref="persistenceUtil"/>
+    </bean>
+
+    <!-- =================================================================== -->
+    <!-- SessionFactory setup                                                -->
+    <!-- =================================================================== -->
+
+<!--    <context:property-placeholder location="classpath:billing.hibernate.properties"/>-->
+<!--
+    <bean id="applicationPreferences" class="au.edu.wa.eddept.common.properties.ApplicationPreferences">
+        <constructor-arg value="sen"/>
+    </bean>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <description>
+            Configurer that replaces ${...} placeholders with values from a
+            properties file (referenced from AppReg via DETJINI).
+        </description>
+        <property name="properties">
+            <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetObject" ref="applicationPreferences"/>
+                <property name="targetMethod" value="getProperties"/>
+            </bean>
+        </property>
+    </bean>
+  -->  
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <description>
+            Local C3P0 DataSource that works in any environment.  It's property
+            settings are derived via the use of propertyConfigurer.
+        </description>
+        <property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@127.0.0.1:1521/orcl"/>
+        <property name="user" value="mark"/>
+        <property name="password" value="mark"/>
+        <property name="preferredTestQuery" value="select 1 from dual"/>
+        <property name="testConnectionOnCheckout" value="false"/>
+        <property name="testConnectionOnCheckin" value="true"/>
+        <property name="idleConnectionTestPeriod" value="300"/>
+        <property name="maxIdleTime" value="1500"/>
+    </bean>
+
+    
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <description>
+            Hibernate SessionFactory definition.  This entry simply references
+            an existing hibernate.cfg.xml configuration file.
+            The "configLocation" property can also be specified using the
+            classpath, e.g. classpath:hibernate.cfg.xml.
+        </description>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+            </props>
+        </property>
+    </bean>
+    
+
+    <!-- =================================================================== -->
+    <!-- Declarative transaction demarcation                                 -->
+    <!-- =================================================================== -->
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <description>Transaction manager for a single Hibernate SessionFactory using a ThreadLocal Session.</description>
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+    </bean>
+
+
+	<aop:config>
+		<aop:pointcut id="businessServiceMethods" expression="execution(* com.msp.rest.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="businessServiceMethods" />
+	</aop:config>
+ 
+        
+        
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- All methods starting with 'get' or 'load' are read-only. -->
+            <tx:method name="get*" timeout="30" read-only="true"/>
+            <tx:method name="load*" timeout="30" read-only="true"/>
+            <tx:method name="retrieve*" timeout="30" read-only="true"/>
+            <!-- Other methods use the default transaction settings below. -->
+            <tx:method name="*" timeout="30"/>
+        </tx:attributes>
+    </tx:advice>
+
+    
+
+    <!-- =================================================================== -->
+    <!-- Project specific DAOs and Services                                  -->
+    <!-- =================================================================== -->
+
+    <!-- List of DAOs -->  
+    <!--  <bean id="sstaDao" class="au.edu.wa.eddept.ssta.dao.SstaDao"/>-->
+    <bean id="restDao" class="com.msp.dao.RestDao"/>
+
+     <!-- List of services 
+     <bean id="sstaService" class="au.edu.wa.eddept.ssta.service.SstaServiceImpl"/>
+     -->
+  
+
+    <!-- =================================================================== -->
+    <!-- GWT RPC services                                                                                                                                    -->
+    <!-- =================================================================== 
+    <bean id="sstaRpcService" class="au.edu.wa.eddept.ssta.gwt.server.SstaServiceImpl"/>
+    -->
+
+</beans>

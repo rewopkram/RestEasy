@@ -1,5 +1,7 @@
 package com.msp.model;
 
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -9,7 +11,7 @@ public class Person {
 	private String city;
 	private String country;
 	private String hobbies;
-	private String dob;
+	private Date dob;
 	
 	
 	public Person() { }
@@ -49,11 +51,11 @@ public class Person {
 		this.hobbies = hobbies;
 	}
 
-	public String getDob() {
+	public Date getDob() {
 		return dob;
 	}
 
-	public void setDob(String dob) {
+	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 	

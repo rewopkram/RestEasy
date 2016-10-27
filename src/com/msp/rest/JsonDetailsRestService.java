@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.msp.model.Person;
+import com.msp.utils.DateUtils;
 
 
 @Path("/jsond")
@@ -21,19 +22,24 @@ public class JsonDetailsRestService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Person personDetails(@DefaultValue("Mark Power") @QueryParam("name") String name) {
 		System.out.println("JsonDetailsRestService searching with name [" + name +"]");
-		for (Person p : getPersons()) {
-			if (p.getName().equals(name)) {
-				return p;
+		try {
+			for (Person p : getPersons()) {
+				if (p.getName().equals(name)) {
+					return p;
+				}
 			}
+		} catch(Exception e) {
+			
 		}
+		
 		return null;
 	}
 	
 	
-	private List<Person> getPersons() {
+	private List<Person> getPersons() throws Exception {
 		ArrayList<Person> list = new ArrayList<Person>(0);
 		Person p = new Person("Mark Power", "Perth", "Australia");
-		p.setDob("21/10/1961");
+		p.setDob(DateUtils.getDate("21/10/1961"));
 		p.setHobbies("Tango,Skiing");
 		list.add(p);
 		p = new Person("Clive Levido", "Auckland", "New Zealand");
