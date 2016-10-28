@@ -1,6 +1,8 @@
 package com.msp.dao;
 
 import java.util.Calendar;
+
+import org.apache.http.impl.cookie.DateUtils;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +20,7 @@ import junit.framework.Assert;
 @ContextConfiguration( {"/applicationContext.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager")
 @Transactional
-public class SstaDaoTest {
+public class RestDaoTest {
 	
 	@Autowired private SessionFactory sessionFactory;
 	
@@ -71,7 +73,11 @@ public class SstaDaoTest {
 		try {
 			RestDao dao = new RestDao(sessionFactory);
 			Person p = new Person();
-			
+			p.setName("Mark Power");
+			p.setCity("Perth");
+			p.setCountry("Australia");
+			p.setDob(DateUtils.parseDate("21/10/1961"));
+			p.setHobbies("Tango,Skiing");
 			dao.save(p, false);
 		} catch (Exception e) {
 			e.printStackTrace();
